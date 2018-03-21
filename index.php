@@ -2,7 +2,7 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-header("Content-type: text/plain");
+header("Content-type: text/plain"); //чтобы работал символ \n в браузере
 
 // 1. Строки
 
@@ -13,13 +13,12 @@ header("Content-type: text/plain");
 function countWordInString($wordsArg, $lookupWordArg) {
     $counter = 0;
     $words = explode(" ", trim($wordsArg));
+    $lookupWordArg = mb_strtolower(trim($lookupWordArg));
     foreach ($words as $word) {
-        if (mb_strtolower($word) === mb_strtolower(trim($lookupWordArg)) || mb_strtoupper($word) === mb_strtoupper(trim($lookupWordArg))) {
-            // echo "$word match $lookupWordArg\n"; 
+        // upper и lower для надежности, но для кириллицы достаточно чего-то одного
+        if (mb_strtolower($word) === $lookupWordArg || mb_strtoupper($word) === $lookupWordArg) {
             $counter++;
-        } else {
-            // echo "$word doesn't match $lookupWordArg\n"; 
-        }
+        } 
     }
     echo "Количество вхождений слова $lookupWordArg: $counter\n";
     return $counter;
@@ -36,13 +35,12 @@ echo "\n#####################################\n\n";
 // func(‘Мама мыла раму’, ‘Мыла мама раму’) = true
 
 function rearrangementCheck($string1, $string2) {
-
     // clean up
     $string1 = preg_replace('/[\s\t\n\r\s]+/', ' ', $string1);
     $string2 = preg_replace('/[\s\t\n\r\s]+/', ' ', $string2);
 
-    $words1 = explode(" ", $string1);
-    $words2 = explode(" ", $string2);
+    $words1 = explode(" ", trim($string1));
+    $words2 = explode(" ", trim($string2));
 
     if (sizeof($words1) != sizeof($words2)) {
         echo "size doesn't match"; 
@@ -50,11 +48,15 @@ function rearrangementCheck($string1, $string2) {
     }
 
     $words2_lower = array_map('mb_strtolower', $words2);
-    $words2_upper = array_map('mb_strtoupper', $words2);
 
     foreach ($words1 as $word) {
-        if (in_array(mb_strtolower($word), $words2_lower) || in_array(mb_strtoupper($word), $words2_upper)) {
+        $word = mb_strtolower($word);
+        if (in_array($word, $words2_lower)) {
             // echo "$word in array\n"; 
+            if (($key = array_search($word, $words2_lower)) !== false) {
+                // echo "removed ". $words2_lower[$key] . "\n";
+                unset($words2_lower[$key]);
+            }
         } else {
             // echo "$word doesn't match\n"; 
             return false;
@@ -63,7 +65,8 @@ function rearrangementCheck($string1, $string2) {
     return true;
 }
 
-echo rearrangementCheck('Мама мыла раму', 'Мыла мама   раму') ? "true\n" : "false\n";
+echo rearrangementCheck("Мама    мыла       раму\n", 'Мыла мама   раму') ? "true\n" : "false\n";
+echo rearrangementCheck("Мама    мама       раму\n", 'раму мама мама') ? "true\n" : "false\n";
 
 echo "\n#####################################\n\n";
 
@@ -160,12 +163,12 @@ sortArray($a, $b);
 
 // 2. Написать функцию, которая будет аналогом функции array_merge().
 
-$array1 = array(3 => "data3", "stringkey" => "stringvalueOLD");
+$array1 = array(7 => "data3", "stringkey" => "stringvalueOLD", 8 => 6, 7);
 $array2 = array(1 => "data", "asd", "stringkey" => "stringvalueNEW");
 
 function mergeArrays($arr1, $arr2) {
-    // $result = array_merge($arr1, $arr2); // для сравнения
-    // print_r($result); 
+    $result = array_merge($arr1, $arr2); // для сравнения результатов
+    print_r($result); 
 
     $resultArr = [];
     foreach ($arr1 as $key => $value) {
@@ -176,13 +179,13 @@ function mergeArrays($arr1, $arr2) {
             } else { 
                 $resultArr[$key] = $value; 
             }
-        } else if (isset($key)) {
+        } else {
             $resultArr[] = $value;
         }
     }
 
-    foreach ($arr2 as $key => $value) { // добавляем остатки второго массива в первый
-        $resultArr[$key] = $value;
+    foreach ($arr2 as $value) { // добавляем остатки второго массива в первый
+        $resultArr[] = $value;
     }
 
     print_r($resultArr);
@@ -195,34 +198,23 @@ mergeArrays($array1, $array2);
 // 3. Написать функцию для подсчета суммы числовых значений в массиве произвольной вложенности,
 // не используя функцию array_sum. То есть, например, для массива $a = [ [ 12, 18 ], 40, [ 4, 6, [ 10 ] ] ] 
 // результат функции должен быть равен 90.
+
 $a = [ [ 12, 18 ], 40, [ 4, 6, [ 10,[2,4] ] ] ];
 
 function arraySumRec($arr) {
     $res = 0;
-    // echo "into func\n";
     foreach ($arr as $value) {
         if (is_array($value)) {
-            arraySumRec($value);
+            $res += arraySumRec($value);
         } 
         else {
-            echo "$value\n";
             $res += $value;
         }
     }
+    return $res;
 }
 
-echo arraySumRec($a);
-
-// 12
-// 18
-// 40
-// 4
-// 6
-// 10
-// 2
-// 4
-
-
+echo "Сумма всех значений вложенных массивов: ".arraySumRec($a);
 
 
 
@@ -236,3 +228,7 @@ echo arraySumRec($a);
 
 // На выходе должно получится
 // [5, 3]
+
+$arr1 = [3, 5, 1, 4, 2];
+$arr2 = [3, 5, 1, 4, 2,11,551,1,11];
+
