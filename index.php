@@ -100,10 +100,25 @@ echo "Следующее воскресенье: " . date("Y/m/d", strtotime('ne
 // или другой способ:
 
 $todayDayNumber = date('N', time());
-$sunday = 0;
-// for ($i = 0; $i <= 7 - $todayDayNumber; $i++) {
-    $sunday = date("Y/m/d", time() + 86400 * (7 - $todayDayNumber));
-// }
+$sunday = date("Y/m/d", time() + 86400 * (7 - $todayDayNumber));
 echo "Следующее воскресенье (способ 2): " . $sunday . "\n";
 
 echo "\n#####################################\n\n";
+
+
+// Рекурсивная функция для вычисления факториала
+
+function factorial($x) {
+    if ($x >= 0) {
+        if ($x === 0) {
+            return 1;
+        } else {
+            return $x * factorial($x-1);
+        }
+    } else {
+        return "Отрицательное число!";
+    }
+}
+
+$factTest = 3;
+echo "Факториал $factTest: " . factorial($factTest) . "\n";
