@@ -122,3 +122,34 @@ function factorial($x) {
 
 $factTest = 3;
 echo "Факториал $factTest: " . factorial($factTest) . "\n";
+
+echo "\n#####################################\n\n";
+
+
+// Работа с массивами
+
+// 1. Имеются два массива: $a = ['x', 'm', 'g', 's', 'a'] и $b = [3, 5, 1, 4, 2].
+// Требуется написать функцию, которая будет принимать на вход два массива и сортировать первый массив
+// в порядке возрастания значений во втором массиве. То есть func($a, $b) должно быть равно  ['g', 'a', 'x', 's', 'm'].
+// Предусмотреть проверку входящих данных внутри функции.
+
+function sortArray($stringArray, $indexArray) {
+    if (sizeof($stringArray) !== sizeof($indexArray)) {
+        echo "Размеры массивов не совпадают!\n";
+        return 0;
+    } elseif (preg_grep('/\D/', $indexArray)) {
+        echo "Не все индексы являются целочисленными!\n";
+        return 0;
+    }
+    
+    $result = [];
+    foreach ($indexArray as $key => $value) {
+        $result[] = $stringArray[$value-1];
+    }
+    print_r($result);
+}
+
+$a = ['x', 'm', 'g', 's', 'a'];
+$b = [3, 5, 1, 4, 2];
+
+sortArray($a, $b);
