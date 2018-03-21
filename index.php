@@ -109,26 +109,6 @@ echo "Следующее воскресенье (способ 2): " . $sunday . 
 echo "\n#####################################\n\n";
 
 
-// Рекурсивная функция для вычисления факториала
-
-function factorial($x) {
-    if ($x >= 0) {
-        if ($x === 0) {
-            return 1;
-        } else {
-            return $x * factorial($x-1);
-        }
-    } else {
-        return "Отрицательное число!";
-    }
-}
-
-$factTest = 3;
-echo "Факториал $factTest: " . factorial($factTest) . "\n";
-
-echo "\n#####################################\n\n";
-
-
 // Работа с массивами
 
 // 1. Имеются два массива: $a = ['x', 'm', 'g', 's', 'a'] и $b = [3, 5, 1, 4, 2].
@@ -214,7 +194,7 @@ function arraySumRec($arr) {
     return $res;
 }
 
-echo "Сумма всех значений вложенных массивов: ".arraySumRec($a);
+echo "Сумма всех значений вложенных массивов: ".arraySumRec($a)."\n";
 
 
 
@@ -229,6 +209,48 @@ echo "Сумма всех значений вложенных массивов: 
 // На выходе должно получится
 // [5, 3]
 
-$arr1 = [3, 5, 1, 4, 2];
-$arr2 = [3, 5, 1, 4, 2,11,551,1,11];
+$arr1 = [3, 5, 1, 4, 2, 111];
+$arr2 = [3, 5, 1, 4, 2, 11, 551, 1, 11];
+$arr3 = [3, 5, 1, 1133, 111, 11];
 
+function searchEqualsInArrays() {
+    $result = [];
+    $args = func_get_args();
+    $argsAmount = func_num_args();
+    echo $argsAmount . " массива в аргументах\n";
+
+    for ($i = 0; $i < $argsAmount-1; $i++) {
+        echo "i = $i\n";
+        foreach ($args[$i] as $arr) {
+            if (in_array($arr, $args[$i+1]) && !in_array($arr, $result)) {
+                echo "$arr is on array:\n";
+                print_r($args[$i+1]);
+                $result[] = $arr;
+            }
+        }
+    }
+    print_r($result);
+}
+
+searchEqualsInArrays($arr1, $arr2, $arr3);
+
+echo "\n#####################################\n\n";
+
+// Рекурсивная функция для вычисления факториала
+
+function factorial($x) {
+    if ($x >= 0) {
+        if ($x === 0) {
+            return 1;
+        } else {
+            return $x * factorial($x-1);
+        }
+    } else {
+        return "Отрицательное число!";
+    }
+}
+
+$factTest = 3;
+echo "Факториал $factTest: " . factorial($factTest) . "\n";
+
+echo "\n#####################################\n\n";
