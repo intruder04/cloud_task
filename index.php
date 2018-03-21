@@ -144,7 +144,9 @@ function sortArray($stringArray, $indexArray) {
     
     $result = [];
     foreach ($indexArray as $key => $value) {
-        $result[] = $stringArray[$value-1];
+        if (array_key_exists($value-1, $stringArray)){
+            $result[] = $stringArray[$value-1];
+        }
     }
     print_r($result);
 }
@@ -153,3 +155,84 @@ $a = ['x', 'm', 'g', 's', 'a'];
 $b = [3, 5, 1, 4, 2];
 
 sortArray($a, $b);
+
+
+
+// 2. Написать функцию, которая будет аналогом функции array_merge().
+
+$array1 = array(3 => "data3", "stringkey" => "stringvalueOLD");
+$array2 = array(1 => "data", "asd", "stringkey" => "stringvalueNEW");
+
+function mergeArrays($arr1, $arr2) {
+    // $result = array_merge($arr1, $arr2); // для сравнения
+    // print_r($result); 
+
+    $resultArr = [];
+    foreach ($arr1 as $key => $value) {
+        if (is_string($key)) { // элементы со строкой в качестве ключа
+            if (array_key_exists($key, $arr2)) { // перемещение элементов из второго массива в результат при совпадении ключей
+                $resultArr[$key] = $arr2[$key]; 
+                unset($arr2[$key]);
+            } else { 
+                $resultArr[$key] = $value; 
+            }
+        } else if (isset($key)) {
+            $resultArr[] = $value;
+        }
+    }
+
+    foreach ($arr2 as $key => $value) { // добавляем остатки второго массива в первый
+        $resultArr[$key] = $value;
+    }
+
+    print_r($resultArr);
+    return $resultArr;
+}
+
+mergeArrays($array1, $array2);
+
+
+// 3. Написать функцию для подсчета суммы числовых значений в массиве произвольной вложенности,
+// не используя функцию array_sum. То есть, например, для массива $a = [ [ 12, 18 ], 40, [ 4, 6, [ 10 ] ] ] 
+// результат функции должен быть равен 90.
+$a = [ [ 12, 18 ], 40, [ 4, 6, [ 10,[2,4] ] ] ];
+
+function arraySumRec($arr) {
+    $res = 0;
+    // echo "into func\n";
+    foreach ($arr as $value) {
+        if (is_array($value)) {
+            arraySumRec($value);
+        } 
+        else {
+            echo "$value\n";
+            $res += $value;
+        }
+    }
+}
+
+echo arraySumRec($a);
+
+// 12
+// 18
+// 40
+// 4
+// 6
+// 10
+// 2
+// 4
+
+
+
+
+
+// 4. Написать функцию которая на вход может принимать два и более массивов. 
+// Функция должна искать значения в этих массивах которые встречаются одновременно 
+// в нескольких (хотя бы в двух) массивах из переданных. Найденные значения функция должна вернуть в виде массива.
+// Пример:
+// Массив 1: [1, 5, 6, 8]
+// Массив 2: [2, 3, 4, 5]
+// Массив 3: [10, 3, 12, 7]
+
+// На выходе должно получится
+// [5, 3]
