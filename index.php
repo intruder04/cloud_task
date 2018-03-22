@@ -38,11 +38,11 @@ echo "1.2 #####################################\n";
 
 function rearrangementCheck($string1, $string2) {
     // clean up
-    $string1 = preg_replace('/[\s\t\n\r\s]+/', ' ', $string1);
-    $string2 = preg_replace('/[\s\t\n\r\s]+/', ' ', $string2);
+    $string1 = preg_replace('/[\s\t\n\r\s]+/', ' ', trim($string1));
+    $string2 = preg_replace('/[\s\t\n\r\s]+/', ' ', trim($string2));
 
-    $words1 = explode(" ", trim($string1));
-    $words2 = explode(" ", trim($string2));
+    $words1 = explode(" ", $string1);
+    $words2 = explode(" ", $string2);
 
     if (sizeof($words1) != sizeof($words2)) {
         echo "size doesn't match"; 
